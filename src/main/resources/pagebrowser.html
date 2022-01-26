@@ -1,0 +1,37 @@
+<iframe id="page-frame" style="position: fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; margin: 0; padding:0; z-index:999999; border:none;"></iframe>
+
+<script>
+	var tabId = Date.now();
+	window.addEventListener("DOMContentLoaded", function()
+	{
+		var TabUtils=new function(){this.CallOnce=function(e,a,o){if(o=o||3e3,!e)throw"empty lockname";if(window.localStorage){var n="_tabutils_"+e;localStorage.setItem(n,t),setTimeout(function(){localStorage.getItem(n)==t&&a()},150),setTimeout(function(){localStorage.removeItem(n)},o)}else a()},this.BroadcastMessageToAllTabs=function(t,a){if(window.localStorage){var o={data:a,timeStamp:(new Date).getTime()};localStorage.setItem("_tabutils_event"+t,JSON.stringify(o));try{e[t](a)}catch(e){}setTimeout(function(){localStorage.removeItem("_tabutils_event"+t)},3e3)}};var e={};this.OnBroadcastMessage=function(t,a){window.localStorage&&(window.addEventListener("storage",function(e){if(e.key=="_tabutils_event"+t&&e.newValue){var o=JSON.parse(e.newValue);a(o.data)}}),e[t]=a)};var t=performance.now()+":"+(1e9*Math.random()|0)};
+
+		// Handle browse requests from other tabs.
+		TabUtils.OnBroadcastMessage("wikilookup-browse", function (e)
+		{
+			// If the current tab is older or the same, it should be the one to browse.
+			if (tabId <= e.id)
+			{
+				// Set the iframe src and close other tabs.
+				var frame = document.getElementById('page-frame');
+				frame.src = e.url;
+				document.title = "WikiLookup - " + e.query;
+
+				TabUtils.BroadcastMessageToAllTabs("wikilookup-close", tabId);
+			}
+		});
+
+		// Handle close tab messages from other tabs.
+		TabUtils.OnBroadcastMessage("wikilookup-close", function (e)
+		{
+			if (e < tabId)
+			{
+				window.close('','_parent','');
+			}
+		});
+
+		TabUtils.BroadcastMessageToAllTabs("wikilookup-browse", {id:tabId, url:"%url", query:"%query"});
+
+	}, false);
+
+</script>

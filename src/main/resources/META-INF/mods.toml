@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[39,)"
+license="CC BY-NC-ND 4.0"
+
+[[mods]]
+modId="wikilookup"
+version="${file.jarVersion}"
+displayName="Wiki Lookup"
+displayURL="https://anthonyhilyard.com/"
+updateJSONURL="https://mc-curse-update-checker.herokuapp.com/561558"
+logoFile="icon.png"
+authors="Grend"
+description='''Adds a /wiki command to quickly look up information on Minecraft wiki (or other wikis).'''
+
+[[dependencies.wikilookup]]
+	modId="forge"
+	mandatory=true
+	versionRange="[39,)"
+	ordering="BEFORE"
+	side="BOTH"
+
+[[dependencies.wikilookup]]
+	modId="minecraft"
+	mandatory=true
+	versionRange="[1.18.1,1.19)"
+	ordering="NONE"
+	side="BOTH"
