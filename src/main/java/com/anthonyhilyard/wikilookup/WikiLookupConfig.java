@@ -20,7 +20,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class WikiLookupConfig extends IcebergConfig<WikiLookupConfig>
 {
-	private static final String MINECRAFT_WIKI_URL = "https://minecraft.fandom.com/wiki/Special:Search?go=Search&search={}";
+	private static final String MINECRAFT_WIKI_URL = "https://minecraft.wiki/w/Special:Search?search={}";
 	private static WikiLookupConfig INSTANCE;
 	public static WikiLookupConfig getInstance() { return INSTANCE; }
 
