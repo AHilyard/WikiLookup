@@ -1,4 +1,4 @@
-package com.anthonyhilyard.wikilookup;
+package com.anthonyhilyard.wikilookup.config;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import com.anthonyhilyard.iceberg.config.IcebergConfig;
 import com.anthonyhilyard.iceberg.config.IcebergConfigSpec;
+import com.anthonyhilyard.wikilookup.WikiLookup;
 import com.electronwill.nightconfig.core.UnmodifiableConfig;
 
 import net.minecraft.client.Minecraft;
@@ -20,7 +21,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class WikiLookupConfig extends IcebergConfig<WikiLookupConfig>
 {
-	private static final String MINECRAFT_WIKI_URL = "https://minecraft.fandom.com/wiki/Special:Search?go=Search&search={}";
+	public static final String MINECRAFT_WIKI_URL = "https://minecraft.wiki/w/Special:Search?search={}";
+	public static final String FANDOM_WIKI_URL = "https://minecraft.fandom.com/wiki/Special:Search?go=Search&search={}";
 	private static WikiLookupConfig INSTANCE;
 	public static WikiLookupConfig getInstance() { return INSTANCE; }
 
@@ -110,26 +112,26 @@ public class WikiLookupConfig extends IcebergConfig<WikiLookupConfig>
 		// We found an item, so return the configured wiki url.
 		if (!results.isEmpty())
 		{
-			return getQueryURL(results.get(0).getItem().getRegistryName().getNamespace(), query);
+			return getQueryURL(ForgeRegistries.ITEMS.getKey(results.get(0).getItem()).getNamespace(), query);
 		}
 
 		// Now check for entities that match the query.
 		// TODO: Use levenshtein distance instead of exact match?
 		// TODO: Prioritize mobs over other types of entities?
-		for (var entry : ForgeRegistries.ENTITIES.getEntries())
+		for (var entry : ForgeRegistries.ENTITY_TYPES.getValues())
 		{
-			if (entry.getKey().getRegistryName().getPath().contentEquals(formatAsID(query)))
+			if (ForgeRegistries.ENTITY_TYPES.getKey(entry).getPath().contentEquals(formatAsID(query)))
 			{
-				return getQueryURL(entry.getKey().getRegistryName().getNamespace(), query);
+				return getQueryURL(ForgeRegistries.ENTITY_TYPES.getKey(entry).getNamespace(), query);
 			}
 		}
 
 		// Check for biomes in the same way as above.
-		for (var entry : ForgeRegistries.BIOMES.getEntries())
+		for (var entry : ForgeRegistries.BIOMES.getValues())
 		{
-			if (entry.getKey().getRegistryName().getPath().contentEquals(formatAsID(query)))
+			if (ForgeRegistries.BIOMES.getKey(entry).getPath().contentEquals(formatAsID(query)))
 			{
-				return getQueryURL(entry.getKey().getRegistryName().getNamespace(), query);
+				return getQueryURL(ForgeRegistries.BIOMES.getKey(entry).getNamespace(), query);
 			}
 		}
 

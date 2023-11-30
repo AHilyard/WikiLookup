@@ -8,11 +8,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent.KeyInputEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.ScreenEvent.KeyReleased;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -23,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Set;
 
+import com.anthonyhilyard.wikilookup.config.WikiLookupConfig;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -31,17 +33,21 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.glfw.GLFW;
 
-
-@Mod.EventBusSubscriber(modid = Loader.MODID, bus = Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = Loader.MODID, bus = Bus.FORGE, value = Dist.CLIENT)
 public class WikiLookup
 {
 	private static final Set<String> ALLOWED_PROTOCOLS = Sets.newHashSet("http", "https");
 	public static final String DEFAULT_WIKI = "_";
 
-	private static final KeyMapping lookupItem = new KeyMapping("Open wiki page for item under mouse", KeyConflictContext.GUI, InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_L), "ket.categories.inventory");
+	private static final KeyMapping lookupItem = new KeyMapping("Lookup Hovered Item", KeyConflictContext.GUI, InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_L), "key.categories.inventory");
+
+	public static void onRegisterKeyMappings(RegisterKeyMappingsEvent event)
+	{
+		event.register(lookupItem);
+	}
 
 	@SubscribeEvent
-	public static void onRegisterCommandsEvent(RegisterCommandsEvent event)
+	public static void onRegisterCommands(RegisterCommandsEvent event)
 	{
 		event.getDispatcher().register(
 			Commands.literal("wiki")
@@ -60,10 +66,9 @@ public class WikiLookup
 	}
 
 	@SubscribeEvent
-	public static void onKeyInput(KeyInputEvent event)
+	public static void onPreKeyUp(KeyReleased.Pre event)
 	{
-		// If the wiki lookup key was pressed, check for an item under the mouse and then look up the wiki page for that item.
-		if (lookupItem.consumeClick())
+		if (lookupItem.matches(event.getKeyCode(), 0))
 		{
 			ItemStack hoveredItem = getHoveredItem();
 			if (hoveredItem != ItemStack.EMPTY)
@@ -152,9 +157,9 @@ public class WikiLookup
 				Util.getPlatform().openUri(uri);
 			}
 		}
-		catch (URISyntaxException urisyntaxexception)
+		catch (URISyntaxException uriSyntaxException)
 		{
-			Loader.LOGGER.error("Can't open configured wiki at {}", fullURL, urisyntaxexception);
+			Loader.LOGGER.error("Can't open configured wiki at {}", fullURL, uriSyntaxException);
 			return false;
 		}
 		return true;

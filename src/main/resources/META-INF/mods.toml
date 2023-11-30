@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[39,)"
+loaderVersion="[46,)"
 license="CC BY-NC-ND 4.0"
 
 [[mods]]
@@ -7,7 +7,7 @@ modId="wikilookup"
 version="${file.jarVersion}"
 displayName="Wiki Lookup"
 displayURL="https://anthonyhilyard.com/"
-updateJSONURL="https://mc-curse-update-checker.herokuapp.com/561558"
+updateJSONURL="https://mc-update-check.anthonyhilyard.com/561558"
 logoFile="icon.png"
 authors="Grend"
 description='''Adds a /wiki command to quickly look up information on Minecraft wiki (or other wikis).'''
@@ -15,13 +15,20 @@ description='''Adds a /wiki command to quickly look up information on Minecraft 
 [[dependencies.wikilookup]]
 	modId="forge"
 	mandatory=true
-	versionRange="[39,)"
+	versionRange="[46.0.0,)"
 	ordering="BEFORE"
 	side="BOTH"
 
 [[dependencies.wikilookup]]
 	modId="minecraft"
 	mandatory=true
-	versionRange="[1.18.1,1.19)"
+	versionRange="[1.20.0,1.21)"
+	ordering="NONE"
+	side="BOTH"
+
+[[dependencies.wikilookup]]
+	modId="iceberg"
+	mandatory=true
+	versionRange="[1.1.13,)"
 	ordering="NONE"
 	side="BOTH"

@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 
-archivesBaseName = project.name + '-' + project.mcVersion
+base.archivesName = project.name + '-' + project.mcVersion
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
@@ -52,17 +52,17 @@ repositories {
 dependencies {
 	minecraft "net.minecraftforge:forge:${project.mcVersion}-${project.forgeVersion}"
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	implementation fg.deobf("curse.maven:iceberg-520110:3623826")
+	implementation fg.deobf("curse.maven:iceberg-520110:4744147")
 }
 
 jar {
 	manifest {
-		attributes(["Specification-Title": project.name,
-					"Specification-Vendor": project.author,
-					"Specification-Version": project.version,
-					"Implementation-Title": project.name,
-					"Implementation-Version": project.version,
-					"Implementation-Vendor" : project.author,
-					"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
+		attributes(["Specification-Title":		project.name,
+					"Specification-Vendor":		project.author,
+					"Specification-Version":	project.version,
+					"Implementation-Title":		project.name,
+					"Implementation-Version":	project.version,
+					"Implementation-Vendor" :	project.author,
+					"Implementation-Timestamp":	new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
 	}
 }

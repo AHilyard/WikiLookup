@@ -3,11 +3,15 @@ package com.anthonyhilyard.wikilookup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.anthonyhilyard.wikilookup.config.ConfigParser;
+import com.anthonyhilyard.wikilookup.config.WikiLookupConfig;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
 @Mod(Loader.MODID)
@@ -20,12 +24,15 @@ public class Loader
 	{
 		if (FMLEnvironment.dist == Dist.CLIENT)
 		{
-			new WikiLookup();
 			MinecraftForge.EVENT_BUS.register(WikiLookup.class);
+			FMLJavaModLoadingContext.get().getModEventBus().addListener(WikiLookup::onRegisterKeyMappings);
+
+			// Make sure we clean up the config file before loading it.
+			ConfigParser.clean();
+
 			WikiLookupConfig.register(WikiLookupConfig.class, MODID);
 		}
 
 		ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> "ANY", (remote, isServer) -> true));
 	}
-
 }
